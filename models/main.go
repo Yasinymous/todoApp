@@ -1,6 +1,7 @@
 package models
 
 import (
+	u "TaskManagement/models/user"
 	"fmt"
 	"os"
 
@@ -31,7 +32,7 @@ func init() {
 	}
 
 	db = conn
-	db.Debug().AutoMigrate(&User{})
+	db.Debug().AutoMigrate(&u.User{})
 }
 
 func GetDB() *gorm.DB {

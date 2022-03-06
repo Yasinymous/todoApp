@@ -2,7 +2,8 @@ package UserController
 
 import (
 	h "TaskManagement/helpers"
-	u "TaskManagement/models"
+	db "TaskManagement/models"
+	u "TaskManagement/models/user"
 	"fmt"
 	"log"
 	"strconv"
@@ -18,6 +19,7 @@ func GetUser(res http.ResponseWriter, req *http.Request) {
 	// 	h.Respond(res, h.Message(false, "Geçersiz istek. Lütfen kontrol ediniz!"))
 	// 	return
 	// }
+
 	userId, ok := req.URL.Query()["userId"]
 
 	if !ok || len(userId[0]) < 1 {
@@ -30,6 +32,16 @@ func GetUser(res http.ResponseWriter, req *http.Request) {
 		// handle error
 		fmt.Println(err)
 	}
-	resp := u.GetUser(i)
-	h.Respond(res, resp)
+
+	user := &u.User{}
+	db.GetDB().Table("users").Where("id = ?", i).First(user)
+	// if acc.Email == "" {
+	// 	return nil
+	// }
+
+	user.Password = ""
+	response := h.Message(true, "Kullanici Bulundu")
+	response["user"] = user
+
+	h.Respond(res, response)
 }
