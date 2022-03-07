@@ -14,6 +14,14 @@ type User struct {
 	SessionToken string `json:"SessionToken"`
 }
 
+type UserSignUp struct {
+	Username     string `son:"Username"`
+	Email        string `json:"Email"`
+	Password     string `json:"Password"`
+	RePassword   string `json:"RePassword"`
+	SessionToken string `json:"SessionToken"`
+}
+
 type Token struct {
 	UserId   uint
 	Username string

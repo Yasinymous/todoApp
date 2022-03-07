@@ -4,12 +4,12 @@ import (
 	h "TaskManagement/helpers"
 	db "TaskManagement/models"
 	u "TaskManagement/models/user"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/context"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,24 +19,20 @@ func SignIn(res http.ResponseWriter, req *http.Request) {
 }
 func SignUp(res http.ResponseWriter, req *http.Request) {
 	user := &u.User{}
+	User := context.Get(req, "User")
 
-	err := json.NewDecoder(req.Body).Decode(user)
-	if err != nil {
-		h.Respond(res, h.Message(false, "Geçersiz istek. Lütfen kontrol ediniz!"))
-		return
+	if u, ok := User.(u.User); ok {
+		user = &u
 	}
-
-	// if resp, ok := user.Validate(); !ok {
-	// 	return resp
-	// }
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
 
 	db.GetDB().Create(user)
 
-	// if user.ID <= 0 {
-	// 	return h.Message(false, "Bağlantı hatası oluştu. Kullanıcı yaratılamadı!")
-	// }
+	if user.ID <= 0 {
+		h.Respond(res, h.Message(false, "Bağlantı hatası oluştu. Kullanıcı yaratılamadı!"))
+		return
+	}
 
 	tk := &u.Token{UserId: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
