@@ -25,5 +25,6 @@ type UserSignUp struct {
 type Token struct {
 	UserId   uint
 	Username string
+	Exp      string
 	jwt.StandardClaims
 }

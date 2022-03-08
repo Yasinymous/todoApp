@@ -12,15 +12,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// func requestTime(next http.Handler) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		ctx := r.Context()
-// 		ctx = context.WithValue(ctx, "requestTime", time.Now().Format(time.RFC3339))
-// 		r = r.WithContext(ctx)
-// 		next.ServeHTTP(w, r)
-// 	})
-// }
-
 func SignUpVerify(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		userSignUp := &u.UserSignUp{}
@@ -46,16 +37,25 @@ func SignUpVerify(next http.Handler) http.Handler {
 			return
 		}
 
-		temp := &u.User{}
+		tempEmail := &u.User{}
+		tempUsername := &u.User{}
 
-		errDb := db.GetDB().Table("users").Where("email = ?", userSignUp.Email).First(temp).Error
-		if errDb != nil && errDb != gorm.ErrRecordNotFound {
+		errEmail := db.GetDB().Table("users").Where("email = ?", userSignUp.Email).First(tempEmail).Error
+		if errEmail != nil && errEmail != gorm.ErrRecordNotFound {
 			h.Respond(res, h.Message(false, "Bağlantı hatası oluştu. Lütfen tekrar deneyiniz!"))
 			return
 		}
-
-		if temp.Email != "" {
+		if tempEmail.Email != "" {
 			h.Respond(res, h.Message(false, "Email adresi başka bir kullanıcı tarafından kullanılıyor."))
+			return
+		}
+		errUsername := db.GetDB().Table("users").Where("username = ?", userSignUp.Username).First(tempUsername).Error
+		if errUsername != nil && errUsername != gorm.ErrRecordNotFound {
+			h.Respond(res, h.Message(false, "Bağlantı hatası oluştu. Lütfen tekrar deneyiniz!"))
+			return
+		}
+		if tempUsername.Username != "" {
+			h.Respond(res, h.Message(false, "Kullanici adi başka bir kullanıcı tarafından kullanılıyor."))
 			return
 		}
 		user := &u.User{}

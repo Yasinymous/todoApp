@@ -5,25 +5,30 @@ import (
 	db "TaskManagement/models"
 	u "TaskManagement/models/user"
 	"fmt"
-	"log"
 	"strconv"
 
 	// "encoding/json"
 	"net/http"
 )
 
-func GetUser(res http.ResponseWriter, req *http.Request) {
-	// user := &u.User{}
-	// err := json.NewDecoder(req.Body).Decode(user) // İstek gövdesi decode edilir, hatalı ise hata döndürülür
-	// if err != nil {
-	// 	h.Respond(res, h.Message(false, "Geçersiz istek. Lütfen kontrol ediniz!"))
-	// 	return
-	// }
+func GetAll(res http.ResponseWriter, req *http.Request) {
+	var users []u.User
 
+	result := db.GetDB().Table("users").Find(&users)
+
+	db.GetDB().Table("users").Select(users)
+
+	response := h.Message(true, "Kullanicicilar Listelendi!")
+	response["data"] = result.Value
+
+	h.Respond(res, response)
+}
+
+func GetUser(res http.ResponseWriter, req *http.Request) {
 	userId, ok := req.URL.Query()["userId"]
 
 	if !ok || len(userId[0]) < 1 {
-		log.Println("Url Param 'key' is missing")
+		h.Respond(res, h.Message(false, "Url Param 'key' is missing!"))
 		return
 	}
 
@@ -35,13 +40,14 @@ func GetUser(res http.ResponseWriter, req *http.Request) {
 
 	user := &u.User{}
 	db.GetDB().Table("users").Where("id = ?", i).First(user)
-	// if acc.Email == "" {
-	// 	return nil
-	// }
+	if user.Email == "" {
+		h.Respond(res, h.Message(false, "Kullanici Bulunamadi!"))
+		return
+	}
 
 	user.Password = ""
 	response := h.Message(true, "Kullanici Bulundu")
-	response["user"] = user
+	response["data"] = user
 
 	h.Respond(res, response)
 }

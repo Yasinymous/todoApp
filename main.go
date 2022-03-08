@@ -2,6 +2,7 @@
 package main
 
 import (
+	middlewares "TaskManagement/middlewares/jwt"
 	AuthRoutes "TaskManagement/routes/auth"
 	UserRoutes "TaskManagement/routes/user"
 
@@ -22,6 +23,7 @@ func main() {
 	// }
 
 	r := mux.NewRouter()
+	r.Use(middlewares.JwtAuthentication)
 	authRoutes := r.PathPrefix("/auth").Subrouter()
 	userRoutes := r.PathPrefix("/user").Subrouter()
 	// boardRoutes := r.PathPrefix("/board").Subrouter()

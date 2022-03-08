@@ -17,4 +17,5 @@ import (
 func RegisterHandlers(r *mux.Router) {
 	r.StrictSlash(true)
 	r.HandleFunc("/get/", controllers.GetUser).Methods("GET")
+	r.HandleFunc("/get/all", controllers.GetAll).Methods("GET")
 }
