@@ -4,6 +4,7 @@ package main
 import (
 	middlewares "TaskManagement/middlewares/jwt"
 	AuthRoutes "TaskManagement/routes/auth"
+	BoardRoutes "TaskManagement/routes/board"
 	UserRoutes "TaskManagement/routes/user"
 
 	// BoardRoutes "TaskManagement/routes/board"
@@ -26,10 +27,10 @@ func main() {
 	r.Use(middlewares.JwtAuthentication)
 	authRoutes := r.PathPrefix("/auth").Subrouter()
 	userRoutes := r.PathPrefix("/user").Subrouter()
-	// boardRoutes := r.PathPrefix("/board").Subrouter()
+	boardRoutes := r.PathPrefix("/board").Subrouter()
 	AuthRoutes.RegisterHandlers(authRoutes)
 	UserRoutes.RegisterHandlers(userRoutes)
-	// BoardRoutes.RegisterHandlers(boardRoutes)
+	BoardRoutes.RegisterHandlers(boardRoutes)
 
 	if err := http.ListenAndServe(":8000", r); err != nil {
 		log.Fatal("Serving error.")

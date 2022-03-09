@@ -6,13 +6,12 @@
 - Genel klasor yapisi duzenlecek ve isimlendirmeler,
 - Ara katmanlar eklenecek,
 - Kullanici modeli bitirilecek,
-- jwt ara katmaninda duzeltilecek
-
+- pano kismi genel oalrak yapildi duzenlenecek
 
 **TEST** <img src="https://user-images.githubusercontent.com/48564989/146607601-4ed65010-bdd7-4344-b0fb-0030b3724152.png" alt="drawing" width="20"/>
 
 - Auth Kayit endpointleri,
-
+- jwt ara katmaninda duzenlendi
 
 **COMPLETE** <img src="https://user-images.githubusercontent.com/48564989/146606311-1f22b5e1-62fe-4f12-b239-789b3295b07f.png" alt="drawing" width="20"/>
 

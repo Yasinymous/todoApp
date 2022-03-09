@@ -1,24 +1,18 @@
 package BoardRoutes
 
-// import (
-// 	AuthController "TaskManagement/controllers/auth"
+import (
+	controllers "TaskManagement/controllers/board"
 
-// 	"github.com/gorilla/mux"
-// ) //
+	"github.com/gorilla/mux"
+)
 
-// // func AuthRoutes() *mux.Router {
-// // 	r := mux.NewRouter()
-// // 	r.HandleFunc("/sign/in", AuthController.SignIn).Methods("POST")
-// // 	r.HandleFunc("/sign/up", AuthController.SignUp).Methods("POST")
-// // 	r.HandleFunc("/sign/out", AuthController.SignOut).Methods("POST")
-// // 	return r
-// // }
+func RegisterHandlers(r *mux.Router) {
 
-// func RegisterHandlers(r *mux.Router) {
+	r.StrictSlash(true)
+	r.HandleFunc("/get/all", controllers.GetAll).Methods("GET")
+	r.HandleFunc("/get", controllers.GetBoard).Methods("GET")
+	r.HandleFunc("/add", controllers.AddBoard).Methods("POST")
+	// r.HandleFunc("/set", controllers.SetBoard).Methods("PUT")
+	// r.HandleFunc("/delete", controllers.DeleteBoard).Methods("DELETE")
 
-// 	r.StrictSlash(true)
-// 	r.HandleFunc("/sign/in", AuthController.SignIn).Methods("POST")
-// 	r.HandleFunc("/sign/up", AuthController.SignUp).Methods("POST")
-// 	r.HandleFunc("/sign/out", AuthController.SignOut).Methods("POST")
-
-// }
+}

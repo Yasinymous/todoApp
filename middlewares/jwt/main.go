@@ -4,7 +4,6 @@ import (
 	h "TaskManagement/helpers"
 	db "TaskManagement/models"
 	u "TaskManagement/models/user"
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -61,7 +60,6 @@ func JwtAuthentication(next http.Handler) http.Handler {
 		}
 
 		tk := &u.Token{}
-		fmt.Println(splitted)
 		token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("token_password")), nil
 		})
@@ -83,7 +81,7 @@ func JwtAuthentication(next http.Handler) http.Handler {
 		}
 
 		// Doğrula başarılı ise işleme devam edilir
-		fmt.Sprintf("Kullanıcı ID %", tk.UserId) // Kullanıcı adı console'a basılır
+
 		user := &u.User{}
 
 		user.ID = tk.UserId

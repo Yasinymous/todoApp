@@ -16,8 +16,6 @@ func GetAll(res http.ResponseWriter, req *http.Request) {
 
 	result := db.GetDB().Table("users").Find(&users)
 
-	db.GetDB().Table("users").Select(users)
-
 	response := h.Message(true, "Kullanicicilar Listelendi!")
 	response["data"] = result.Value
 

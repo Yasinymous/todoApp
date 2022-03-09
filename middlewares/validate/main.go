@@ -62,7 +62,7 @@ func SignUpVerify(next http.Handler) http.Handler {
 
 		user.Username = userSignUp.Username
 		user.Email = userSignUp.Email
-		user.Password = userSignUp.Password
+		user.Password = ""
 
 		context.Set(req, "User", *user)
 		next.ServeHTTP(res, req)

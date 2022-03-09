@@ -3,15 +3,18 @@ package models
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
+
+	b "TaskManagement/models/board"
 )
 
 type User struct {
 	gorm.Model
 	// Id           int       `gorm:"not null" json:"Id"`
-	Username     string `gorm:"not null" json:"Username"`
-	Email        string `gorm:"not null" json:"Email"`
-	Password     string `gorm:"not null" json:"Password"`
-	SessionToken string `json:"SessionToken"`
+	Username     string    `gorm:"not null" json:"Username"`
+	Email        string    `gorm:"not null" json:"Email"`
+	Password     string    `gorm:"not null" json:"Password"`
+	SessionToken string    `json:"SessionToken"`
+	Board        []b.Board `gorm:"foreignKey:UserId"`
 }
 
 type UserSignUp struct {

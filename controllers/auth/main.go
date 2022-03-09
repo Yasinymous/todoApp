@@ -5,6 +5,7 @@ import (
 	db "TaskManagement/models"
 	u "TaskManagement/models/user"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -33,6 +34,8 @@ func SignIn(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	fmt.Println(user.Password)
+	fmt.Println(temp.Password)
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(temp.Password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { // Parola eşleşmedi
 		h.Respond(res, h.Message(false, "Parola hatalı! Lütfen tekrar deneyiniz!"))
@@ -62,7 +65,12 @@ func SignUp(res http.ResponseWriter, req *http.Request) {
 	if u, ok := User.(u.User); ok {
 		user = &u
 	}
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
+	if err != nil {
+		panic(err)
+	}
 	user.Password = string(hashedPassword)
 
 	db.GetDB().Create(user)
@@ -80,7 +88,7 @@ func SignUp(res http.ResponseWriter, req *http.Request) {
 	user.Password = ""
 
 	response := h.Message(true, "Hesap başarıyla yaratıldı!")
-	response["user"] = user
+	response["data"] = user
 
 	h.Respond(res, response)
 }
