@@ -12,7 +12,7 @@ func RegisterHandlers(r *mux.Router) {
 	r.HandleFunc("/get/all", controllers.GetAll).Methods("GET")
 	r.HandleFunc("/get", controllers.GetBoard).Methods("GET")
 	r.HandleFunc("/add", controllers.AddBoard).Methods("POST")
-	// r.HandleFunc("/set", controllers.SetBoard).Methods("PUT")
-	// r.HandleFunc("/delete", controllers.DeleteBoard).Methods("DELETE")
+	r.HandleFunc("/set", controllers.SetBoard).Methods("PUT")
+	r.HandleFunc("/delete", controllers.DeleteBoard).Methods("DELETE")
 
 }

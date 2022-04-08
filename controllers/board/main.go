@@ -88,54 +88,85 @@ func AddBoard(res http.ResponseWriter, req *http.Request) {
 	h.Respond(res, response)
 }
 
-// func SetBoard(res http.ResponseWriter, req *http.Request) {
-// 	board := &b.Board{}
-// 	user := &u.User{}
-// 	User := context.Get(req, "User")
-// 	if u, ok := User.(u.User); ok {
-// 		user = &u
-// 	}
-// 	errbody := json.NewDecoder(req.Body).Decode(board)
-// 	if errbody != nil {
-// 		h.Respond(res, h.Message(false, "Geçersiz istek. Lütfen kontrol ediniz!"))
-// 		return
-// 	}
-// 	board.UserId = user
-// 	db.GetDB().Create(board)
+func SetBoard(res http.ResponseWriter, req *http.Request) {
+	user := &u.User{}
+	User := context.Get(req, "User")
+	if u, ok := User.(u.User); ok {
+		user = &u
+	}
+	boardId, ok := req.URL.Query()["boardId"]
+	if !ok || len(boardId[0]) < 1 {
+		h.Respond(res, h.Message(false, "Url Param 'key' is missing!"))
+		return
+	}
 
-// 	if user.ID <= 0 {
-// 		h.Respond(res, h.Message(false, "Bağlantı hatası oluştu. Pano yaratılamadı!"))
-// 		return
-// 	}
+	updateBoard := &b.Board{}
+	board := &b.Board{}
+	errbody := json.NewDecoder(req.Body).Decode(updateBoard)
+	if errbody != nil {
+		h.Respond(res, h.Message(false, "Geçersiz istek. Lütfen kontrol ediniz!"))
+		return
+	}
 
-// 	response := h.Message(true, "Pano başarıyla yaratıldı!")
-// 	response["user"] = user
+	bId, err := strconv.Atoi(boardId[0])
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+	}
 
-// 	h.Respond(res, response)
-// }
+	db.GetDB().First(&board, bId)
+	if board.UserId != int(user.ID) {
+		h.Respond(res, h.Message(false, "Yetkiniz Bulunamadi!"))
+		return
+	}
+	if board.Title == "" {
+		h.Respond(res, h.Message(false, "Pano Bulunamadi!"))
+		return
+	}
 
-// func DeleteBoard(res http.ResponseWriter, req *http.Request) {
-// 	board := &b.Board{}
-// 	user := &u.User{}
-// 	User := context.Get(req, "User")
-// 	if u, ok := User.(u.User); ok {
-// 		user = &u
-// 	}
-// 	errbody := json.NewDecoder(req.Body).Decode(board)
-// 	if errbody != nil {
-// 		h.Respond(res, h.Message(false, "Geçersiz istek. Lütfen kontrol ediniz!"))
-// 		return
-// 	}
-// 	board.UserId = user
-// 	db.GetDB().Create(board)
+	board.Title = updateBoard.Title
+	board.Description = updateBoard.Description
 
-// 	if user.ID <= 0 {
-// 		h.Respond(res, h.Message(false, "Bağlantı hatası oluştu. Pano yaratılamadı!"))
-// 		return
-// 	}
+	db.GetDB().Save(&board)
 
-// 	response := h.Message(true, "Pano başarıyla yaratıldı!")
-// 	response["user"] = user
+	response := h.Message(true, "Board UPDATE SUCCESS!")
+	response["data"] = board
+	h.Respond(res, response)
+}
 
-// 	h.Respond(res, response)
-// }
+func DeleteBoard(res http.ResponseWriter, req *http.Request) {
+
+	user := &u.User{}
+	User := context.Get(req, "User")
+	if u, ok := User.(u.User); ok {
+		user = &u
+	}
+	boardId, ok := req.URL.Query()["boardId"]
+	if !ok || len(boardId[0]) < 1 {
+		h.Respond(res, h.Message(false, "Url Param 'key' is missing!"))
+		return
+	}
+
+	bId, err := strconv.Atoi(boardId[0])
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+	}
+	board := &b.Board{}
+	db.GetDB().First(&board, bId)
+	if board.UserId != int(user.ID) {
+		h.Respond(res, h.Message(false, "Yetkiniz Bulunamadi!"))
+		return
+	}
+	if board.Title == "" {
+		h.Respond(res, h.Message(false, "Pano Bulunamadi!"))
+		return
+	}
+
+	db.GetDB().Delete(&board)
+
+	response := h.Message(true, "Board DELETE SUCCESS!")
+	response["data"] = board
+	h.Respond(res, response)
+
+}
